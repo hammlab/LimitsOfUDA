@@ -1,5 +1,5 @@
 # Understanding the Limits of Unsupervised Domain Adaptation via Data Poisoning
-<hr>
+
 <p align = justify>
 Unsupervised domain adaptation (UDA) enables cross-domain learning without target domain labels by transferring knowledge from a labeled source domain whose distribution differs from the target. However, UDA is not always successful and several accounts of 'negative transfer' have been reported in the literature. In this work, we prove a simple lower bound on the target domain error that complements the existing upper bound. Our bound shows the insufficiency of minimizing source domain error and marginal distribution mismatch for a guaranteed reduction in the target domain error, due to the possible increase of induced labeling function mismatch.  This insufficiency is further illustrated through simple distributions for which the same UDA approach succeeds, fails, and may succeed or fail with an equal chance. 
 Motivated from this, we propose novel data poisoning attacks to fool UDA methods into learning representations that produce large target domain errors.  
@@ -10,6 +10,8 @@ The failure of UDA methods demonstrates the limitations of UDA at guaranteeing c
 with the lower bound. 
 Thus, evaluation of UDA methods in adversarial settings such as data poisoning can provide a better sense of their robustness in scenarios unfavorable for UDA.
 </p>
+
+<hr>
 
 ### Obtaining the data
 <ul>

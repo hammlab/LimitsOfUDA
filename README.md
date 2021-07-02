@@ -22,12 +22,12 @@ Understanding the Limits of Unsupervised Domain Adaptation via Data Poisoning
 ### Experiments on Office-31
 	- Download the code from https://github.com/microsoft/Domain-Adaptation-with-Conditional-Distribution-Matching-and-Generalized-Label-Shift
 	- Navigate to ./data/office-31/ directory and place the files in the Office-31 folder of the supplementary material there.
-  #### Attack with mislabeled target domain poison data
+	- Attack with mislabeled target domain poison data
 		1. Navigate to ./data/office-31/
 		2. To generate the poisoned files with mislabeled target domain data added to them, run python3 train_source_only.py --SRC amazon --DEST dslr, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
 		3. To run the original code with poisoned files, navigate back to main folder (cd ../../) and run python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list.txt --t_dset_file dslr_list.txt. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.
 		
-	#### Attack with mislabeled source domain poison data
+	- Attack with mislabeled source domain poison data
 		1. Navigate to ./data/office-31/
 		2. To generate the poisoned files with mislabeled source domain data added to them, run python3 train_source_only_watermarked.py --SRC amazon --DEST dslr --ALPHA 0, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
 		3. To run the original code with poisoned files, navigate back to main folder (cd ../../) and run python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list_watermarked_0.0.txt --t_dset_file dslr_list.txt. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.	

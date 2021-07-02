@@ -1,0 +1,193 @@
+import matplotlib
+matplotlib.use('Agg')
+import numpy as np
+import tensorflow_addons as tfa
+import keras
+import tensorflow as tf
+import gzip
+import pickle as cPickle
+
+def clip_eta(eta, norm, eps):
+    """
+    Helper function to clip the perturbation to epsilon norm ball.
+    :param eta: A tensor with the current perturbation.
+    :param norm: Order of the norm (mimics Numpy).
+                Possible values: np.inf, 1 or 2.
+    :param eps: Epsilon, bound of the perturbation.
+    """
+
+    # Clipping perturbation eta to self.norm norm ball
+    if norm not in [np.inf, 1, 2]:
+        raise ValueError("norm must be np.inf, 1, or 2.")
+    axis = list(range(1, len(eta.shape)))
+    avoid_zero_div = 1e-12
+    if norm == np.inf:
+        eta = tf.clip_by_value(eta, -eps, eps)
+    else:
+        if norm == 1:
+            raise NotImplementedError("")
+            # This is not the correct way to project on the L1 norm ball:
+            # norm = tf.maximum(avoid_zero_div, reduce_sum(tf.abs(eta), reduc_ind, keepdims=True))
+        elif norm == 2:
+            # avoid_zero_div must go inside sqrt to avoid a divide by zero in the gradient through this operation
+            norm = tf.sqrt(
+                tf.maximum(
+                    avoid_zero_div, tf.reduce_sum(tf.square(eta), axis, keepdims=True)
+                )
+            )
+        # We must *clip* to within the norm ball, not *normalize* onto the surface of the ball
+        factor = tf.minimum(1.0, tf.math.divide(eps, norm))
+        eta = eta * factor
+    return eta
+
+
+def load_usps(all_use=True):
+    f = gzip.open('/path/usps_28x28.pkl', 'rb')
+    data_set = cPickle.load(f, encoding='latin1')
+    f.close()
+    img_train = data_set[0][0]
+    label_train = data_set[0][1]
+    img_test = data_set[1][0]
+    label_test = data_set[1][1]
+    inds = np.random.permutation(img_train.shape[0])
+    if all_use:
+        img_train = img_train[inds][:6562]
+        label_train = label_train[inds][:6562]
+    else:
+        img_train = img_train[inds][:1800]
+        label_train = label_train[inds][:1800]
+    img_train = img_train.reshape((img_train.shape[0], 28, 28, 1))
+    img_test = img_test.reshape((img_test.shape[0], 28, 28, 1))
+    return img_train, label_train, img_test, label_test
+
+def eval_accuracy_main(x_test, y_test, shared, classifier):
+    acc = 0
+    batch_size = 200
+    nb_batches = int(len(x_test)/batch_size)
+    if len(x_test)%batch_size!= 0:
+        nb_batches += 1
+    for batch in range(nb_batches):
+        ind_batch = range(batch_size*batch, min(batch_size*(1+batch), len(x_test)))
+        sha = shared(x_test[ind_batch], training=False)
+        pred = classifier(sha, training=False)
+        acc += np.sum(np.argmax(pred,1) == np.argmax(y_test[ind_batch],1))
+    
+    acc /= np.float32(len(x_test))
+    return acc
+
+def eval_accuracy_dc(x_test, y_test, shared, classifier):
+    acc = 0
+    batch_size = 200
+    nb_batches = int(len(x_test)/batch_size)
+    if len(x_test)%batch_size!= 0:
+        nb_batches += 1
+    for batch in range(nb_batches):
+        ind_batch = range(batch_size*batch, min(batch_size*(1+batch), len(x_test)))
+        
+        x = x_test[ind_batch]
+        y = y_test[ind_batch]
+        
+        sha = shared(x, training=False)
+        pred = classifier(sha, training=False)
+        acc += np.sum(np.argmax(pred,1) == np.argmax(y, 1))
+    
+    acc /= np.float32(len(x_test))
+    return acc
+
+def eval_accuracy_dc_cdan(x_test, y_test, shared, main_classifier, domain_classifier):
+    acc = 0
+    batch_size = 200
+    nb_batches = int(len(x_test)/batch_size)
+    if len(x_test)%batch_size!= 0:
+        nb_batches += 1
+    for batch in range(nb_batches):
+        ind_batch = range(batch_size*batch, min(batch_size*(1+batch), len(x_test)))
+        
+        x = x_test[ind_batch]
+        y = y_test[ind_batch]
+        
+        combined_features = shared(x, training=False)
+        combined_logits = main_classifier(combined_features, training=False)
+        combined_softmax = tf.nn.softmax(combined_logits)
+        
+        combined_features_reshaped = tf.reshape(combined_features, [-1, 1, 512])
+        combined_softmax_reshaped = tf.reshape(combined_softmax, [-1, 10, 1])
+        domain_input = tf.matmul(combined_softmax_reshaped, combined_features_reshaped)
+        domain_input_reshaped = tf.reshape(domain_input, [-1, 5120])
+        
+        domain_logits = domain_classifier(domain_input_reshaped, training=False)
+        acc += np.sum(np.argmax(domain_logits,1) == np.argmax(y, 1))
+    
+    acc /= np.float32(len(x_test))
+    return acc
+
+def eval_accuracy_dc_cdan_random(x_test, y_test, shared, main_classifier, domain_classifier, random_matrix_features, random_matrix_classifier):
+    acc = 0
+    batch_size = 200
+    nb_batches = int(len(x_test)/batch_size)
+    if len(x_test)%batch_size!= 0:
+        nb_batches += 1
+    for batch in range(nb_batches):
+        ind_batch = range(batch_size*batch, min(batch_size*(1+batch), len(x_test)))
+        
+        x = x_test[ind_batch]
+        y = y_test[ind_batch]
+        
+        combined_features = shared(x, training=False)
+        combined_logits = main_classifier(combined_features, training=False)
+        combined_softmax = tf.nn.softmax(combined_logits)
+        
+        R_combined_features = tf.matmul(combined_features, random_matrix_features)
+        R_combined_softmax = tf.matmul(combined_softmax, random_matrix_classifier)
+        
+        domain_input = tf.multiply(R_combined_features, R_combined_softmax) / tf.sqrt(500.)
+        
+        domain_logits = domain_classifier(domain_input, training=False)
+        acc += np.sum(np.argmax(domain_logits,1) == np.argmax(y, 1))
+    
+    acc /= np.float32(len(x_test))
+    return acc
+
+def eval_accuracy_aux(x_test, shared, classifier, NUM_CLASSES_AUX):
+    acc = 0
+    batch_size = 200
+    nb_batches = int(len(x_test)/batch_size)
+    if len(x_test)%batch_size!= 0:
+        nb_batches += 1
+    for batch in range(nb_batches):
+        ind_batch = range(batch_size*batch, min(batch_size*(1+batch), len(x_test)))
+        
+        x = x_test[ind_batch]
+        y = np.random.randint(0, NUM_CLASSES_AUX, len(ind_batch))
+        
+        x_aux = tfa.image.rotate(x, tf.cast(y * (np.pi/2), tf.float32))
+        y_aux = keras.utils.to_categorical(y, NUM_CLASSES_AUX)
+        
+        sha = shared(x_aux, training=False)
+        pred = classifier(sha, training=False)
+        acc += np.sum(np.argmax(pred,1) == np.argmax(y_aux,1))
+    
+    acc /= np.float32(len(x_test))
+    return acc
+
+def get_balanced_set(X, Y, points, num_classes, shuffle = True):
+    assert Y.shape[1] == num_classes
+    classes = np.unique(np.argmax(Y, 1))
+    num_per_class = int(points / len(classes))
+    for i in range(len(classes)):
+        clss = np.argwhere(np.argmax(Y, 1) == classes[i]).flatten()
+        np.random.shuffle(clss)
+        clss = clss[:num_per_class]
+        if i == 0:
+            X_ = np.array(X[clss])
+            Y_ = np.array(Y[clss])
+        else:
+            X_ = np.concatenate([X_, X[clss]])
+            Y_ = np.concatenate([Y_, Y[clss]])
+            
+    if shuffle:
+        idx = np.arange(len(X_))
+        np.random.shuffle(idx)
+        X_ = X_[idx]
+        Y_ = Y_[idx]
+    return X_, Y_

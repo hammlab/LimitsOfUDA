@@ -64,3 +64,11 @@ Thus, evaluation of UDA methods in adversarial settings such as data poisoning c
 
 ### Illustrative cases for UDA:
 Run python3 three_illustrative_cases.py file in Illustrative_cases folder.
+
+#### Citing
+
+If you find this useful for your work, please consider citing
+<pre>
+<code>
+</code>
+</pre>

@@ -13,7 +13,7 @@ Thus, evaluation of UDA methods in adversarial settings such as data poisoning c
 
 <hr>
 
-### The codes used to report the results in the paper <b>"[Understanding the Limits of Unsupervised DomainAdaptation via Data Poisoning](https://arxiv.org/abs/2012.01274)"</b> are present in this repository.
+### The codes used to report the results in the paper <b>"[Understanding the Limits of Unsupervised DomainAdaptation via Data Poisoning](https://arxiv.org/abs/2107.03919)"</b> are present in this repository.
 <hr>
 
 ### Obtaining the data
@@ -70,5 +70,13 @@ Run python3 three_illustrative_cases.py file in Illustrative_cases folder.
 If you find this useful for your work, please consider citing
 <pre>
 <code>
+@misc{mehra2021understanding,
+      title={Understanding the Limits of Unsupervised Domain Adaptation via Data Poisoning}, 
+      author={Akshay Mehra and Bhavya Kailkhura and Pin-Yu Chen and Jihun Hamm},
+      year={2021},
+      eprint={2107.03919},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
+}
 </code>
 </pre>

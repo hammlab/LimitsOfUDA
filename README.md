@@ -33,12 +33,12 @@ Thus, evaluation of UDA methods in adversarial settings such as data poisoning c
 	<li> Attack with mislabeled and watermarked poison data
 		<ul>
 		<li> Navigate to the appropriate task in the Digits folder
-		<li> To evaluate performance with mislabeled poison data run python3 train_dann.py --TYPE POISON --ALPHA 1 --PP 0.1 where PP refers to the poison percentage. To test a different UDA method use the appropriate train_{UDA_method_name}.py file. Changing the value of ALPHA lets you control the amount of target data present in the poison. Value of 1 means poison data is same as target data, value of 0 means poison data is same as source data, an intermediate value means poison data is a combination of source and target data (watermarking). 
+		<li> To evaluate performance with mislabeled poison data run <code>python3 train_dann.py --TYPE POISON --ALPHA 1 --PP 0.1 </code> where PP refers to the poison percentage. To test a different UDA method use the appropriate train_{UDA_method_name}.py file. Changing the value of ALPHA lets you control the amount of target data present in the poison. Value of 1 means poison data is same as target data, value of 0 means poison data is same as source data, an intermediate value means poison data is a combination of source and target data (watermarking). 
 		</ul>
 	<li> Attack with clean-label poison data	
 		<ul>
 		<li> Navigate to MNIST_MNISTM/clean_label_attacks folder
-		<li> To generate clean label attack using base data initialized from the target domain run python3 generate_poison_data_{UDA_method_name}.py --ETA 0.1 --BASE_DOMAIN target. For base data from the source domain change --BASE_DOMAIN to source. 
+		<li> To generate clean label attack using base data initialized from the target domain run <code> python3 generate_poison_data_{UDA_method_name}.py --ETA 0.1 --BASE_DOMAIN target </code>. For base data from the source domain change --BASE_DOMAIN to source. 
 		<li>To evaluate the performance of the UDA method on the genrated attack, run python3 retrain_{UDA_method_name}.py 
 		</ul>
 </ul>	
@@ -50,20 +50,20 @@ Thus, evaluation of UDA methods in adversarial settings such as data poisoning c
 	<li> Attack with mislabeled target domain poison data
 		<ul>
 		<li> Navigate to ./data/office-31/
-		<li> To generate the poisoned files with mislabeled target domain data added to them, run python3 train_source_only.py --SRC amazon --DEST dslr, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
-		<li> To run the original code with poisoned files, navigate back to main folder (cd ../../) and run python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list.txt --t_dset_file dslr_list.txt. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.
+		<li> To generate the poisoned files with mislabeled target domain data added to them, run <code>python3 train_source_only.py --SRC amazon --DEST dslr </code>, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
+		<li> To run the original code with poisoned files, navigate back to main folder (cd ../../) and run <code> python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list.txt --t_dset_file dslr_list.txt </code>. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.
 		</ul>
 	<li> Attack with mislabeled source domain poison data
 		<ul>
 		<li> Navigate to ./data/office-31/
-		<li> To generate the poisoned files with mislabeled source domain data added to them, run python3 train_source_only_watermarked.py --SRC amazon --DEST dslr --ALPHA 0, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
-		<li> To run the original code with poisoned files, navigate back to main folder (cd ../../) and run python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list_watermarked_0.0.txt --t_dset_file dslr_list.txt. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.	
+		<li> To generate the poisoned files with mislabeled source domain data added to them, run <code> python3 train_source_only_watermarked.py --SRC amazon --DEST dslr --ALPHA 0 </code>, with appropriate values of source_domain \in {amazon, dslr, webcam} and target_domain \in {amazon, dslr, webcam}.
+		<li> To run the original code with poisoned files, navigate back to main folder (cd ../../) and run <code> python train_image.py DANN --dset office-31 --s_dset_file poisoned_src_amazon_dest_dslr_list_watermarked_0.0.txt --t_dset_file dslr_list.txt </code>. Change the UDA algorithm to any of the algorithms from {DANN, CDAN, IW-DAN, IW-CDAN} and change the name of the source and destination files based on the values chosen in the previous step.	
 		</ul>
 
 </ul>
 
 ### Illustrative cases for UDA:
-Run python3 three_illustrative_cases.py file in Illustrative_cases folder.
+Run <code> python3 three_illustrative_cases.py </code> file in Illustrative_cases folder.
 
 #### Citing
 

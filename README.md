@@ -5,7 +5,7 @@ Unsupervised domain adaptation (UDA) enables cross-domain learning without targe
 Motivated from this, we propose novel data poisoning attacks to fool UDA methods into learning representations that produce large target domain errors.  
 We evaluate the effect of these attacks on popular UDA methods using benchmark datasets where they have been previously shown to be successful.
 Our results show that poisoning can significantly decrease the target domain accuracy, dropping it to 
-almost 0\% in some cases, with the addition of only 10\% poisoned data in the source domain. 
+almost 0% in some cases, with the addition of only 10% poisoned data in the source domain. 
 The failure of UDA methods demonstrates the limitations of UDA at guaranteeing cross-domain generalization consistent
 with the lower bound. 
 Thus, evaluation of UDA methods in adversarial settings such as data poisoning can provide a better sense of their robustness in scenarios unfavorable for UDA.

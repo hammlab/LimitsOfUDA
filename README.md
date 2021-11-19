@@ -70,13 +70,11 @@ Run <code> python3 three_illustrative_cases.py </code> file in Illustrative_case
 If you find this useful for your work, please consider citing
 <pre>
 <code>
-@misc{mehra2021understanding,
-      title={Understanding the Limits of Unsupervised Domain Adaptation via Data Poisoning}, 
-      author={Akshay Mehra and Bhavya Kailkhura and Pin-Yu Chen and Jihun Hamm},
-      year={2021},
-      eprint={2107.03919},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+@inproceedings{mehra2021understanding,
+  title={Understanding the Limits of Unsupervised Domain Adaptation via Data Poisoning},
+  author={Mehra, Akshay and Kailkhura, Bhavya and Chen, Pin-Yu and Hamm, Jihun},
+  booktitle={Thirty-Fifth Conference on Neural Information Processing Systems},
+  year={2021}
 }
 </code>
 </pre>
